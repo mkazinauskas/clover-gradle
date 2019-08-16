@@ -1,18 +1,50 @@
-plugins {
-	id 'org.springframework.boot' version '2.1.7.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.7.RELEASE'
-	id 'java'
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.bmuschko:gradle-clover-plugin:2.2.3'
+    }
 }
+
+plugins {
+    id 'org.springframework.boot' version '2.1.7.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+    id 'java'
+}
+
+apply plugin: 'com.bmuschko.clover'
 
 group = 'modestukasai'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 repositories {
-	mavenCentral()
+    jcenter()
+    mavenCentral()
+}
+
+clover {
+    // Although Clover is now open source the plugin
+    // still expects to find the license file.
+    // Any file will work.
+    licenseLocation = File.createTempFile('clover', '.license').absolutePath
+
+    // This is neededed to see which tests targeted code
+    // In this particular project I'm only using Spock
+    // specifications
+    testIncludes = ['**/*Spec.groovy']
+
+    // I would like to have both html and xml report
+    report {
+        html = true
+        xml = true
+    }
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    clover 'org.openclover:clover:4.3.1'
 }
